@@ -8,3 +8,18 @@ body{
     background: #132252;
     box-shadow: 0 8px 8px 0 rgba(179, 179, 179, 0.363);
 }
+
+.ajs-dialog{
+	background: #ffffff !important;
+    color: black;
+  /*verde para el body*/
+}
+.ajs-header{
+	background: #a8a8a8 !important;
+    font-weight: bold !important;
+  /*azul para el header*/
+}
+.ajs-footer{
+	background: #afafaf !important;
+  /*rojo para el footer*/
+}
