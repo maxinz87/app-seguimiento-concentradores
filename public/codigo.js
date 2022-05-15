@@ -53,7 +53,7 @@ const listarConcentradoresTabla = (datosConcentradores) => {
 }
 
 
-
+//emula a la funcion on de Jquery para trabajar con los botones dinamicos de btnBorrar
 const on = (elemento, evento, selector, controlador) => {
 
     elemento.addEventListener(evento, e => {
@@ -62,6 +62,7 @@ const on = (elemento, evento, selector, controlador) => {
         }
     })
 }
+
 
 on(document, 'click', '.btnBorrar', e => {
     const nroConcentrador = e.target.parentNode.parentNode.firstElementChild;
@@ -84,13 +85,11 @@ const cargarTabla = async () => {
     spanCargando.style.display = "none";
 }
 
-btnGuardar.addEventListener('click', () => {
-    console.log("funcion boton");
-});
-
+//se carga la tabla al abrir la web
 cargarTabla();
 
 
+//código que realiza la petición POST al tratar de agregar un concentrador
 formConcentrador.addEventListener('submit', async e => {
     e.preventDefault();
     const nroConcentradorTemp = nroConcentrador.value;
@@ -107,6 +106,9 @@ formConcentrador.addEventListener('submit', async e => {
     });
 
     if(consulta.status === 200){
+        nroConcentrador.value = "";
+        ubicacion.value = "";
+        dirip.value = "";
         infoGuardar.innerHTML= `Se agregó el concentrador ${nroConcentradorTemp} a la base de datos`;
         infoGuardar.style.fontWeight="bold";
         infoGuardar.style.color="#01ED2D";

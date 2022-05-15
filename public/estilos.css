@@ -4,6 +4,16 @@ body{
     color: white;
 }
 
+@media (max-width:400px){
+    #tablaConcentradores {
+      font-size: 10px !important;
+    }
+    .btnBorrar{
+        font-size: 8px !important;
+        font-weight: bolder;
+    }
+  }
+
 .contenedorTabla{
     background: #132252;
     box-shadow: 0 8px 8px 0 rgba(179, 179, 179, 0.363);
