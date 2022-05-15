@@ -22,10 +22,24 @@ const agregarConcentrador = async (req, res) => {
     });
 }
 
-const eliminarConcentrador = (req, res) => {
+const eliminarConcentrador = async (req, res) => {
+
+    const { id } = req.params;
+
+    const data = await Concentrador.findByIdAndDelete(id);
+
+    console.log(data);
+
+    if(!data){
+        return res.status(400).json({
+            ok:false,
+            msg: 'No existe el nro de concentrador a eliminar'})
+    }
+
+
     res.status(200).json({
         ok: true,
-        msg: 'Eliminar concentrador'
+        msg: `Se eliminó el concentrador nro ${data.numero}`
     })
 }
 
