@@ -1,10 +1,23 @@
 const Concentrador = require('../modelos/concentrador');
 
-const listarConcentradores = (req, res) => {
-    res.status(200).json({
-        ok: true,
-        msg: 'listarConcetradores'
-    })
+const listarConcentradores = async (req, res) => {
+
+    try {
+        const data = await Concentrador.find();
+
+        if(!data){
+            return res.status(400).json({ok:false, msg:"No hay documentos en la coleccion Concentradores"});
+        }
+
+        res.status(200).json({
+            ok: true,
+            data
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ok:false, msg: "hubo un error durante el procesamiento de la consulta"});
+    }
 }
 
 const agregarConcentrador = async (req, res) => {

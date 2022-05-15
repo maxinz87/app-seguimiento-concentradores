@@ -1,0 +1,10 @@
+
+body{
+    background: #122B7E;
+    color: white;
+}
+
+.contenedorTabla{
+    background: #132252;
+    box-shadow: 0 8px 8px 0 rgba(179, 179, 179, 0.363);
+}
