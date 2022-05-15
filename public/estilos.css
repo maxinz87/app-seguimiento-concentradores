@@ -23,3 +23,7 @@ body{
 	background: #afafaf !important;
   /*rojo para el footer*/
 }
+
+#infoGuardar{
+    margin-left: 20px;
+}

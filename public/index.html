@@ -12,11 +12,12 @@
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
 
 <link rel="stylesheet" href="./estilos.css">
-    <title>Alta concentradores de telemedición</title>
+    <title>Alta de concentradores</title>
 </head>
 <body>
 <div class="container mt-4 py-2 contenedorTabla">
-    <h3>Alta concentradores de telemedición (A.K.A. turquito system)</h3>
+    <h3 class="w-100 text-center">Alta de concentradores</h3>
+    <h5 class="w-100 text-center">turquito system 2.0</h5>
 
     <div class="container">
         <form>
@@ -32,13 +33,14 @@
                 <label for="" class="col-form-label">dirección IP:</label>
                 <input id="dirIP" class="form-control" type="text" autofocus>
             </div>
-            <button id="btnGuardar" class="btn btn-success" type="submit">Guardar</button>
+            <div class="container">
+                <button id="btnGuardar" class="btn btn-success" type="submit">Guardar</button>
+                <span id="infoGuardar"></span>
+
         </form>
     </div>
     <div class="">
-        <span id="spanCargando" style="display: none;">
-            Cargando tabla, espere unos instantes...
-        </span>
+
         <table id="tablaConcentradores" class="table table-dark mt-2 table-bordered table-striped">
             <thead class="table-dark">
                 <tr class="text-center">
@@ -48,10 +50,15 @@
                     <th>Borrar</th>
                 </tr>
             </thead>
+
             <tbody class="table-group-divider">
 
             </tbody>
+
         </table>
+        <span id="spanCargando" style="display: none;" class="w-100 text-center">
+            Cargando tabla, espere unos instantes...
+        </span>
     </div>
 </div>
 

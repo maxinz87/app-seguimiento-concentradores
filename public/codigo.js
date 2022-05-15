@@ -8,6 +8,7 @@ const nroConcentrador = document.querySelector('#nroConcentrador');
 const ubicacion = document.querySelector('#ubicacion');
 const dirip = document.querySelector('#dirIP');
 const spanCargando = document.querySelector('#spanCargando');
+const infoGuardar = document.querySelector('#infoGuardar');
 
 
 
@@ -92,6 +93,7 @@ cargarTabla();
 
 formConcentrador.addEventListener('submit', async e => {
     e.preventDefault();
+    const nroConcentradorTemp = nroConcentrador.value;
     const consulta = await fetch(URL_API+'concentradores', {
         method: 'POST',
         headers: {
@@ -104,7 +106,27 @@ formConcentrador.addEventListener('submit', async e => {
         })
     });
 
-    console.log(consulta.status);
+    if(consulta.status === 200){
+        infoGuardar.innerHTML= `Se agregó el concentrador ${nroConcentradorTemp} a la base de datos`;
+        infoGuardar.style.fontWeight="bold";
+        infoGuardar.style.color="#01ED2D";
+        infoGuardar.style.display="inline";
+        setTimeout(()=>{
+            infoGuardar.style.display="none";
+        },3000);
+    }
+    else {
+        let respuesta = await consulta.json();
+        console.log(respuesta.msg);
+        infoGuardar.innerHTML = respuesta.msg;
+        infoGuardar.style.fontWeight="bold";
+        infoGuardar.style.color="orange";
+        infoGuardar.style.display="inline";
+        setTimeout(()=>{
+            infoGuardar.style.display="none";
+        },3000);
+    }
+
 
     cargarTabla();
 
