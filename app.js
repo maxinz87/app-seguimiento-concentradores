@@ -1,16 +1,8 @@
-const express = require('express')
-const app = express()
 require('dotenv').config();
 
-const port = process.env.PORT;
+const Servidor = require('./modelos/servidor');
 
 
-app.use(express.static('public'));
+const servidor = new Servidor();
 
-app.get('*', (req, res) => {
-  res.sendFile(__dirname + '/public/404.html')
-});
-
-app.listen(port, () => {
-    console.log(`servidor Node activo desde el puerto ${port}`);
-});
+servidor.listen();
