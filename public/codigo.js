@@ -106,7 +106,7 @@ formConcentrador.addEventListener('submit', async e => {
     });
 
     if(consulta.status === 200){
-        nroConcentrador.value = "";
+        nroConcentrador.value = "",
         ubicacion.value = "";
         dirip.value = "";
         infoGuardar.innerHTML= `Se agregó el concentrador ${nroConcentradorTemp} a la base de datos`;
@@ -119,8 +119,13 @@ formConcentrador.addEventListener('submit', async e => {
     }
     else {
         let respuesta = await consulta.json();
-        console.log(respuesta.msg);
-        infoGuardar.innerHTML = respuesta.msg;
+        if(respuesta.errors instanceof Array){
+            infoGuardar.innerHTML = respuesta.errors[0].msg;
+        }else{
+            infoGuardar.innerHTML = respuesta.msg;
+        }
+        console.log(respuesta);
+
         infoGuardar.style.fontWeight="bold";
         infoGuardar.style.color="orange";
         infoGuardar.style.display="inline";
