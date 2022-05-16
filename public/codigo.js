@@ -1,3 +1,4 @@
+
 const URL_API = 'https://seg-concentradores.herokuapp.com/api/';
 const contenedor_tabla = document.querySelector('tbody');
 let data = '';
@@ -9,7 +10,12 @@ const ubicacion = document.querySelector('#ubicacion');
 const dirip = document.querySelector('#dirIP');
 const spanCargando = document.querySelector('#spanCargando');
 const infoGuardar = document.querySelector('#infoGuardar');
+const modalMasInfo = new bootstrap.Modal(document.getElementById('modalMasInfo'),{backdrop:'static'});
 
+const modal_title = document.querySelector('.modal-title');
+const spanNro = document.querySelector('#spanNro');
+const spanIP = document.querySelector('#spanIP');
+const spanUbi = document.querySelector('#spanUbi');
 
 
 const consultaDB = async () => {
@@ -42,7 +48,8 @@ const listarConcentradoresTabla = (datosConcentradores) => {
             <tr>
                 <td _id="${concentrador._id}">${concentrador.numero}</td>
                 <td>${concentrador.ubicacion}</td>
-                <td><a class="valorIP" target="_blank" href="http://${concentrador.ip}">${concentrador.ip}</a></td> 
+                <td><a class="valorIP" target="_blank" href="http://${concentrador.ip}">${concentrador.ip}</a></td>
+                <td class="text-center"><a class="btnMasInfo btn btn-primary">+</a></td> 
                 <td class="text-center"><a class="btnBorrar btn btn-danger">X</a></td>
             </tr>
         `
@@ -79,14 +86,27 @@ on(document, 'click', '.btnBorrar', e => {
 
 });
 
+on(document, 'click', '.btnMasInfo', e => {
+    //const nroConcentrador = e.target.parentNode.parentNode.firstElementChild;
+    //console.log(nroConcentrador.getAttribute("_id"));
+
+    modal_title.innerHTML = `Concentrador nro ${e.target.parentNode.parentNode.children[0].innerHTML}`
+    spanNro.innerHTML = e.target.parentNode.parentNode.children[0].innerHTML;
+    spanUbi.innerHTML = e.target.parentNode.parentNode.children[1].innerHTML;
+    spanIP.innerHTML = e.target.parentNode.parentNode.children[2].innerHTML;
+    modalMasInfo.show();
+
+});
+
 const cargarTabla = async () => {
     spanCargando.style.display = "block";
     listarConcentradoresTabla(await consultaDB());
     spanCargando.style.display = "none";
 }
 
-//se carga la tabla al abrir la web
-cargarTabla();
+
+
+
 
 
 //código que realiza la petición POST al tratar de agregar un concentrador
@@ -139,3 +159,8 @@ formConcentrador.addEventListener('submit', async e => {
 
 
 });
+
+
+
+//se carga la tabla al abrir la web
+cargarTabla();

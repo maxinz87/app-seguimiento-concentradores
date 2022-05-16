@@ -45,3 +45,11 @@ body{
 .valorIP:hover{
   color:#7bcfff;
 }
+
+.modal{
+  color: black;
+}
+
+.col-form-label{
+  font-weight: bolder;
+}
