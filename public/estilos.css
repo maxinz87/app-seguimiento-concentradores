@@ -37,3 +37,11 @@ body{
 #infoGuardar{
     margin-left: 20px;
 }
+
+.valorIP:link{
+  color:#00a2ff;
+}
+
+.valorIP:hover{
+  color:#7bcfff;
+}

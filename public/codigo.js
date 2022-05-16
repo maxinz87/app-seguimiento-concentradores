@@ -37,12 +37,12 @@ const listarConcentradoresTabla = (datosConcentradores) => {
     data = '';
 
     datosConcentradores.data.forEach( concentrador => {
-
+//<a target="_blank" href="http://'+ip+'">'+ ip + '</a>'
         data += `
             <tr>
                 <td _id="${concentrador._id}">${concentrador.numero}</td>
                 <td>${concentrador.ubicacion}</td>
-                <td>${concentrador.ip}</td>
+                <td><a class="valorIP" target="_blank" href="http://${concentrador.ip}">${concentrador.ip}</a></td> 
                 <td class="text-center"><a class="btnBorrar btn btn-danger">X</a></td>
             </tr>
         `
