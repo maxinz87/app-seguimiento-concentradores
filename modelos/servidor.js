@@ -1,3 +1,4 @@
+const  path = require('path');
 const express = require('express');
 const cors = require('cors');
 const { dbConexion } = require('../db/db_config');
@@ -26,7 +27,7 @@ class Servidor {
         this.app.use(this.concentradoresPath, require('../rutas/concentradores'));
 
         this.app.get('*', (req, res) => {
-            res.sendFile(__dirname + '/../public/404.html')
+            res.sendFile(path.join(__dirname,'../public','404.html'));
           });
     }
 

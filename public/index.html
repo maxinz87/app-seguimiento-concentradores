@@ -21,17 +21,36 @@
 
     <div class="container">
         <form>
+          <div class="row">
+            <div class="mb-3 col-md-6">
+              <label for="" class="col-form-label">Nro. concentrador:</label>
+              <input id="nroConcentrador" class="form-control" type="number" autofocus>
+          </div>
+          <div class="mb-3 col-md-6">
+            <label for="" class="col-form-label">Fecha alta:</label>
+            <input id="fechaAlta" class="form-control" type="date" >
+        </div>
+          </div>
+
             <div class="mb-3">
-                <label for="" class="col-form-label">Nro. concentrador:</label>
-                <input id="nroConcentrador" class="form-control" type="number" autofocus>
+                <label for="" class="col-form-label">Localidad:</label>
+                <input id="localidad" class="form-control" type="text" >
             </div>
-            <div class="mb-3">
-                <label for="" class="col-form-label">Ubicacion:</label>
-                <input id="ubicacion" class="form-control" type="text" autofocus>
+
+            <div class="row">
+              <div class="mb-3 col-md-6">
+                <label for="" class="col-form-label">Calle:</label>
+                <input id="calle" class="form-control" type="text" >
+              </div>
+              <div class="mb-3 col-md-6">
+                <label for="" class="col-form-label">Altura:</label>
+                <input id="altura" class="form-control" type="text" >
+              </div>
             </div>
+
             <div class="mb-3">
                 <label for="" class="col-form-label">dirección IP:</label>
-                <input id="dirIP" class="form-control" type="text" autofocus>
+                <input id="dirIP" class="form-control" type="text" >
             </div>
             <div class="container">
                 <button id="btnGuardar" class="btn btn-success" type="submit">Guardar</button>
@@ -83,7 +102,7 @@
             <span id="spanNro"></span>
           </div>
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">ubicacion:</label>
+            <label for="recipient-name" class="col-form-label">ubicación:</label>
             <span id="spanUbi"></span>
           </div>
           <div class="mb-3">

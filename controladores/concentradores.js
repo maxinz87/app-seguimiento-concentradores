@@ -20,6 +20,28 @@ const listarConcentradores = async (req, res) => {
     }
 }
 
+const listarConcentrador = async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+        const data = await Concentrador.findById(id);
+
+        if(!data){
+            return res.status(400).json({ok:false, msg:"el documento no existe en la coleccion Concentradores"});
+        }
+
+        res.status(200).json({
+            ok: true,
+            data
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ok:false, msg: "hubo un error durante el procesamiento de la consulta listarConcentrador"});
+    }
+}
+
 const agregarConcentrador = async (req, res) => {
 
     const data = req.body;
@@ -59,5 +81,6 @@ const eliminarConcentrador = async (req, res) => {
 module.exports = {
     agregarConcentrador,
     listarConcentradores,
-    eliminarConcentrador
+    eliminarConcentrador,
+    listarConcentrador
 }
