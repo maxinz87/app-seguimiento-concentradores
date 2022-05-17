@@ -1,6 +1,6 @@
 
-const URL_API = 'http://192.168.0.56:3000/api/';
-//const URL_API = 'https://seg-concentradores.herokuapp.com/api/';
+//const URL_API = 'http://192.168.0.56:3000/api/';
+const URL_API = 'https://seg-concentradores.herokuapp.com/api/';
 const contenedor_tabla = document.querySelector('tbody');
 let data = '';
 
