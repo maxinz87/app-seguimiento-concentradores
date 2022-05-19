@@ -1,6 +1,6 @@
+import {consultaDB, eliminarConcentrador, consultaConcentrador, agregarConcentrador} from './consultas.js';
 
-//const URL_API = 'http://192.168.0.56:3000/api/';
-const URL_API = 'https://seg-concentradores.herokuapp.com/api/';
+const URL_API = 'https://seg-concentradores.herokuapp.com/';
 const contenedor_tabla = document.querySelector('tbody');
 let data = '';
 
@@ -20,6 +20,8 @@ localidad.disabled = true;
 const spanCargando = document.querySelector('#spanCargando');
 const infoGuardar = document.querySelector('#infoGuardar');
 const modalMasInfo = new bootstrap.Modal(document.getElementById('modalMasInfo'),{backdrop:'static'});
+const modalRegCambios = new bootstrap.Modal(document.getElementById('modalRegCambios'),{backdrop:'static'});
+
 
 const modal_title = document.querySelector('.modal-title');
 const spanNro = document.querySelector('#spanNro');
@@ -27,46 +29,31 @@ const spanIP = document.querySelector('#spanIP');
 const spanUbi = document.querySelector('#spanUbi');
 const spanFecha = document.querySelector('#spanFecha');
 
+const modal_body_RegCambios = document.querySelector('.modal-body-RegCambios');
 
-
-const consultaDB = async () => {
-    //colocar try catch para manejar los errores asincronos
-    let consulta = await fetch(URL_API+'concentradores');
-    let resultado = await consulta.json();
-
-    return resultado;
-}
-
-const eliminarConcentrador = async (_id) => {
-    let consulta = await fetch(URL_API+`concentradores/${_id}`, {
-        method: 'DELETE'
-    });
-
-    let resultado = await consulta.json();
-
-    if(resultado){
-        cargarTabla();
-    }
-}
 
 const listarConcentradoresTabla = (datosConcentradores) => {
 
     data = '';
 
-    datosConcentradores.data.forEach( concentrador => {
-//<a target="_blank" href="http://'+ip+'">'+ ip + '</a>'
-        data += `
-            <tr>
-                <td _id="${concentrador._id}">${concentrador.numero}</td>
-                <td>${concentrador.calle} ${concentrador.altura}, ${concentrador.localidad}</td>
-                <td><a class="valorIP" target="_blank" href="http://${concentrador.ip}">${concentrador.ip}</a></td>
-                <td class="text-center"><a class="btnMasInfo btn btn-primary">+</a></td> 
-                <td class="text-center"><a class="btnBorrar btn btn-danger">X</a></td>
-            </tr>
-        `
-        contenedor_tabla.innerHTML = data;
-        
-    });
+    if(datosConcentradores.data.length > 0){
+        datosConcentradores.data.forEach( concentrador => {
+            //<a target="_blank" href="http://'+ip+'">'+ ip + '</a>'
+                    data += `
+                        <tr>
+                            <td _id="${concentrador._id}">${concentrador.numero}</td>
+                            <td>${concentrador.calle} ${concentrador.altura}, ${concentrador.localidad}</td>
+                            <td><a class="valorIP" target="_blank" href="http://${concentrador.ip}">${concentrador.ip}</a></td>
+                            <td class="text-center"><a class="btnMasInfo btn btn-primary">+</a></td> 
+                            <td class="text-center"><a class="btnBorrar btn btn-danger">X</a></td>
+                        </tr>
+                    `
+                    contenedor_tabla.innerHTML = data;
+                    
+                });
+    }
+    else
+    contenedor_tabla.innerHTML = data;
 
 }
 
@@ -88,7 +75,7 @@ on(document, 'click', '.btnBorrar', e => {
 
     alertify.confirm(`Está seguro de eliminar el concentrador ${nroConcentrador.innerHTML} de la base de datos?`,
      function(){
-         eliminarConcentrador(nroConcentrador.getAttribute("_id"));
+         eliminarConcentrador(URL_API,nroConcentrador.getAttribute("_id"),cargarTabla);
        alertify.success('concentrador eliminado');
      },
      function(){
@@ -101,9 +88,8 @@ on(document, 'click', '.btnMasInfo', async e => {
     const _id = e.target.parentNode.parentNode.children[0].getAttribute("_id")
     //const nroConcentrador = e.target.parentNode.parentNode.firstElementChild;
     //console.log(nroConcentrador.getAttribute("_id"));
-    const consulta = await fetch(URL_API+`concentradores/${_id}`);
 
-    const resultado = await consulta.json();
+    const resultado = await consultaConcentrador(URL_API,_id);
 
     const datos = resultado.data; 
     const fecha = new Date(datos.fecha_alta); //Se parsea la fecha a tipo válido
@@ -118,9 +104,65 @@ on(document, 'click', '.btnMasInfo', async e => {
 
 });
 
+
+
+const consultaLogs = async(URL_API) => {
+    const consulta = await fetch(URL_API+'admin/regcambios/logs')
+    const resultado = await consulta.json();
+    return resultado.consultaLogs;
+}
+
+
+const crearDivLogs = (arregloObjLog) => {
+
+    const fragmento = document.createDocumentFragment(); //crea fragmento para luego agregar contenido y posteriormente pintarlo en la web
+    
+    console.log("dentro de la funcion crearDivLogs",arregloObjLog);
+    for(let i=0; i < arregloObjLog.length; i++){
+        let fecha = new Date(arregloObjLog[i].fecha); 
+
+        const contenedor = document.createElement('div');
+        const fechaContenido = document.createElement('span');
+        fechaContenido.style.fontSize = "16px";
+        fechaContenido.style.fontWeight = "bold";
+
+        const descripcion = document.createElement('p');
+        descripcion.style.whiteSpace = "pre-line";
+
+        
+        fechaContenido.innerHTML = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
+        descripcion.innerHTML = arregloObjLog[i].descripcion;
+
+        contenedor.appendChild(fechaContenido);
+        contenedor.appendChild(descripcion);
+        fragmento.appendChild(contenedor);
+        }
+        while (modal_body_RegCambios.firstChild) {
+            modal_body_RegCambios.removeChild(modal_body_RegCambios.firstChild);
+          }
+        
+        modal_body_RegCambios.appendChild(fragmento);
+}
+
+const pintarLogs = async () => {
+    const datos= await consultaLogs(URL_API);
+
+    crearDivLogs(datos);
+}
+
+on(document, 'click', '.btnRegCambios', async e => {
+
+    await pintarLogs();
+    modalRegCambios.show();
+
+});
+
+
+
+
 const cargarTabla = async () => {
     spanCargando.style.display = "block";
-    listarConcentradoresTabla(await consultaDB());
+    listarConcentradoresTabla(await consultaDB(URL_API));
     spanCargando.style.display = "none";
 }
 
@@ -133,20 +175,7 @@ const cargarTabla = async () => {
 formConcentrador.addEventListener('submit', async e => {
     e.preventDefault();
     const nroConcentradorTemp = nroConcentrador.value;
-    const consulta = await fetch(URL_API+'concentradores', {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify({
-            fecha_alta: new Date(fechaAlta.value),
-            numero: nroConcentrador.value,
-            localidad: localidad.value,
-            ip: dirip.value,
-            calle: calle.value,
-            altura: altura.value
-        })
-    });
+    const consulta = await agregarConcentrador(URL_API, fechaAlta.value, nroConcentrador.value, localidad.value, dirip.value, calle.value, altura.value);
 
     if(consulta.status === 200){
         fechaAlta.value = "";

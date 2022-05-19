@@ -54,3 +54,19 @@ body{
 .col-form-label{
   font-weight: bolder;
 }
+
+.modal-header{
+  background: #00a2ff;
+}
+
+.modal-body{
+  background: #122B7E;
+}
+
+.modal-footer{
+  background: #00a2ff;
+}
+
+.modal-content{
+  color: white;
+}

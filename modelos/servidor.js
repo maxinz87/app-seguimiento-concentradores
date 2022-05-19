@@ -9,6 +9,7 @@ class Servidor {
         this.app = express();
         this.port = process.env.PORT;
         this.concentradoresPath = '/api/concentradores';
+        this.regCambiosPath = '/admin';
 
         dbConexion();
         this.middlewares();
@@ -26,9 +27,13 @@ class Servidor {
 
         this.app.use(this.concentradoresPath, require('../rutas/concentradores'));
 
+        this.app.use(this.regCambiosPath, require('../rutas/admin'));
+
         this.app.get('*', (req, res) => {
             res.sendFile(path.join(__dirname,'../public','404.html'));
           });
+
+
     }
 
     listen() {
