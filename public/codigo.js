@@ -1,7 +1,7 @@
 import {consultaDB, consultaConcentrador, agregarConcentrador} from './consultas.js';
 
-const URL_API = 'http://192.168.0.56:3000/';
-//onst URL_API = 'https://seg-concentradores.herokuapp.com/';
+
+const URL_API = 'https://seg-concentradores.herokuapp.com/';
 const contenedor_tabla = document.querySelector('tbody');
 let data = '';
 
