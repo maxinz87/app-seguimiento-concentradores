@@ -1,6 +1,7 @@
-import {consultaDB, eliminarConcentrador, consultaConcentrador, agregarConcentrador} from './consultas.js';
+import {consultaDB, consultaConcentrador, agregarConcentrador} from './consultas.js';
 
-const URL_API = 'https://seg-concentradores.herokuapp.com/';
+const URL_API = 'http://192.168.0.56:3000/';
+//onst URL_API = 'https://seg-concentradores.herokuapp.com/';
 const contenedor_tabla = document.querySelector('tbody');
 let data = '';
 
@@ -57,6 +58,19 @@ const listarConcentradoresTabla = (datosConcentradores) => {
 
 }
 
+const eliminarConcentrador = async (URL_API, _id) => {
+    let consulta = await fetch(URL_API+`api/concentradores/${_id}`, {
+        method: 'DELETE'
+    });
+
+    let resultado = await consulta.json();
+
+    if(resultado){
+        console.log("dentro funcion eliminarConcentrador");
+        cargarTabla();
+    }
+}
+
 
 //emula a la funcion on de Jquery para trabajar con los botones dinamicos de btnBorrar
 const on = (elemento, evento, selector, controlador) => {
@@ -75,7 +89,7 @@ on(document, 'click', '.btnBorrar', e => {
 
     alertify.confirm(`Está seguro de eliminar el concentrador ${nroConcentrador.innerHTML} de la base de datos?`,
      function(){
-         eliminarConcentrador(URL_API,nroConcentrador.getAttribute("_id"),cargarTabla);
+         eliminarConcentrador(URL_API,nroConcentrador.getAttribute("_id"));
        alertify.success('concentrador eliminado');
      },
      function(){
@@ -161,6 +175,7 @@ on(document, 'click', '.btnRegCambios', async e => {
 
 
 const cargarTabla = async () => {
+    console.log("dentro de cargartabla");
     spanCargando.style.display = "block";
     listarConcentradoresTabla(await consultaDB(URL_API));
     spanCargando.style.display = "none";

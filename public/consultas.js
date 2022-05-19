@@ -6,17 +6,7 @@ const consultaDB = async (URL_API) => {
     return resultado;
 }
 
-const eliminarConcentrador = async (URL_API, _id, callback) => {
-    let consulta = await fetch(URL_API+`api/concentradores/${_id}`, {
-        method: 'DELETE'
-    });
 
-    let resultado = await consulta.json();
-
-    if(resultado){
-        callback //funcion cargar_tabla();
-    }
-}
 
 const consultaConcentrador = async (URL_API,_id) => {
     const consulta = await fetch(URL_API+`api/concentradores/${_id}`);
@@ -40,4 +30,4 @@ const agregarConcentrador = async (URL_API, fechaAlta, nroConcentrador, localida
     });
 }
 
-export {consultaDB, eliminarConcentrador, consultaConcentrador, agregarConcentrador};
+export {consultaDB, consultaConcentrador, agregarConcentrador};
