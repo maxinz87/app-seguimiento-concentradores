@@ -13,7 +13,7 @@ const consultaConcentrador = async (URL_API,_id) => {
     return (await consulta.json());
 }
 
-const agregarConcentrador = async (URL_API, fechaAlta, nroConcentrador, localidad, dirip, calle, altura) => {
+const agregarConcentrador = async (URL_API, fechaAlta, nroConcentrador, localidad, dirip, calle, altura, nroUsuMono, nroUsuTri, nroAl, observaciones) => {
     return await fetch(URL_API+'api/concentradores', {
         method: 'POST',
         headers: {
@@ -25,9 +25,27 @@ const agregarConcentrador = async (URL_API, fechaAlta, nroConcentrador, localida
             localidad: localidad,
             ip: dirip,
             calle: calle,
-            altura: altura
+            altura: altura,
+            nro_usuarios_mono: nroUsuMono,
+            nro_usuarios_tri: nroUsuTri,
+            nro_alumbrados: nroAl,
+            observaciones: observaciones
         })
     });
 }
 
-export {consultaDB, consultaConcentrador, agregarConcentrador};
+const eliminarConcentrador = async (URL_API, _id, callback) => {
+    let consulta = await fetch(URL_API+`api/concentradores/${_id}`, {
+        method: 'DELETE'
+    });
+
+    let resultado = await consulta.json();
+
+    if(resultado){
+        console.log("dentro funcion eliminarConcentrador");
+        //cargarTabla();
+        callback();
+    }
+}
+
+export {consultaDB, consultaConcentrador, agregarConcentrador, eliminarConcentrador};

@@ -48,6 +48,15 @@ const agregarConcentrador = async (req, res) => {
 
     const data = req.body;
 
+    if(data.nro_usuarios_mono)
+        data.nro_usuarios_mono = Math.floor(data.nro_usuarios_mono);
+
+    if(data.nro_usuarios_tri)
+        data.nro_usuarios_tri = Math.floor(data.nro_usuarios_tri);
+
+    if(data.nro_alumbrados)
+        data.nro_alumbrados = Math.floor(data.nro_alumbrados);
+
     const concentrador = new Concentrador(data);
 
     await concentrador.save();

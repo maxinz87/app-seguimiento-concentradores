@@ -53,10 +53,34 @@
                 <label for="" class="col-form-label">dirección IP:</label>
                 <input id="dirIP" class="form-control" type="text" >
             </div>
-            <div class="container">
-                <button id="btnGuardar" class="btn btn-success" type="submit">Guardar</button>
-                <span id="infoGuardar"></span>
 
+            <div class="row">
+              <div class="mb-3 col-md-4">
+                <label for="" class="col-form-label">nro usuarios monofásicos:</label>
+                <input id="nroUsuMono" class="form-control" type="number" >
+              </div>
+    
+              <div class="mb-3 col-md-4">
+                <label for="" class="col-form-label">nro usuarios trifásicos:</label>
+                <input id="nroUsuTri" class="form-control" type="number" >
+              </div>
+    
+              <div class="mb-3 col-md-4">
+                <label for="" class="col-form-label">nro alumbrados:</label>
+                <input id="nroAl" class="form-control" type="number" >
+              </div>
+            </div>
+
+          <div class="mb-4">
+            <label for="" class="col-form-label">observaciones:</label>
+            <textarea class="form-control" id="observaciones" cols="30" rows="5"></textarea>
+
+          </div>
+            <div class="container text-center">
+                <button id="btnGuardar" class="btn btn-success mb-4" type="submit">Guardar</button>
+                <br>
+                <span style="display:none;" id="infoGuardar"> </span>
+            </div>
 
         </form>
     </div>
@@ -127,7 +151,7 @@
             <span id="spanTotal"></span>
           </div>
           <div class="mb-3">
-            <label for="message-text" class="col-form-label">observaciones:</label>
+            <label for="message-text" class="col-form-labelObser">observaciones:</label>
             <span id="spanObser"></span>
           </div>
         </form>

@@ -1,4 +1,5 @@
-import {consultaDB, consultaConcentrador, agregarConcentrador} from './consultas.js';
+import {consultaDB, consultaConcentrador, agregarConcentrador, eliminarConcentrador} from './consultas.js';
+
 
 
 const URL_API = 'https://seg-concentradores.herokuapp.com/';
@@ -13,6 +14,10 @@ const localidad = document.querySelector('#localidad');
 const dirip = document.querySelector('#dirIP');
 const calle = document.querySelector('#calle');
 const altura = document.querySelector('#altura');
+const nroUsuMono = document.querySelector('#nroUsuMono');
+const nroUsuTri = document.querySelector('#nroUsuTri');
+const nroAl = document.querySelector('#nroAl');
+const observaciones = document.querySelector('#observaciones');
 
 //Provisoriamente la localidad está limitada a Rafaela
 localidad.value = "Rafaela";
@@ -29,6 +34,10 @@ const spanNro = document.querySelector('#spanNro');
 const spanIP = document.querySelector('#spanIP');
 const spanUbi = document.querySelector('#spanUbi');
 const spanFecha = document.querySelector('#spanFecha');
+const spanUMono = document.querySelector('#spanUMono');
+const spanUTri = document.querySelector('#spanUTri');
+const spanNroAl = document.querySelector('#spanNroAl');
+const spanObser = document.querySelector('#spanObser');
 
 const modal_body_RegCambios = document.querySelector('.modal-body-RegCambios');
 
@@ -58,18 +67,7 @@ const listarConcentradoresTabla = (datosConcentradores) => {
 
 }
 
-const eliminarConcentrador = async (URL_API, _id) => {
-    let consulta = await fetch(URL_API+`api/concentradores/${_id}`, {
-        method: 'DELETE'
-    });
-
-    let resultado = await consulta.json();
-
-    if(resultado){
-        console.log("dentro funcion eliminarConcentrador");
-        cargarTabla();
-    }
-}
+/////////////////////////////////////////////////////
 
 
 //emula a la funcion on de Jquery para trabajar con los botones dinamicos de btnBorrar
@@ -89,7 +87,7 @@ on(document, 'click', '.btnBorrar', e => {
 
     alertify.confirm(`Está seguro de eliminar el concentrador ${nroConcentrador.innerHTML} de la base de datos?`,
      function(){
-         eliminarConcentrador(URL_API,nroConcentrador.getAttribute("_id"));
+         eliminarConcentrador(URL_API,nroConcentrador.getAttribute("_id"),cargarTabla);
        alertify.success('concentrador eliminado');
      },
      function(){
@@ -114,6 +112,11 @@ on(document, 'click', '.btnMasInfo', async e => {
     spanNro.innerHTML = e.target.parentNode.parentNode.children[0].innerHTML;
     spanUbi.innerHTML = e.target.parentNode.parentNode.children[1].innerHTML;
     spanIP.innerHTML = e.target.parentNode.parentNode.children[2].innerHTML;
+    spanUMono.innerHTML = datos.nro_usuarios_mono;
+    spanUTri.innerHTML = datos.nro_usuarios_tri;
+    spanNroAl.innerHTML = datos.nro_alumbrados;
+    spanTotal.innerHTML = parseInt(datos.nro_usuarios_mono) + parseInt(datos.nro_usuarios_tri) + parseInt(datos.nro_alumbrados);
+    spanObser.innerHTML = datos.observaciones;
     modalMasInfo.show();
 
 });
@@ -143,12 +146,15 @@ const crearDivLogs = (arregloObjLog) => {
         const descripcion = document.createElement('p');
         descripcion.style.whiteSpace = "pre-line";
 
+        const separador = document.createElement('hr');
+
         
         fechaContenido.innerHTML = `${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
         descripcion.innerHTML = arregloObjLog[i].descripcion;
 
         contenedor.appendChild(fechaContenido);
         contenedor.appendChild(descripcion);
+        contenedor.appendChild(separador);
         fragmento.appendChild(contenedor);
         }
         while (modal_body_RegCambios.firstChild) {
@@ -190,7 +196,7 @@ const cargarTabla = async () => {
 formConcentrador.addEventListener('submit', async e => {
     e.preventDefault();
     const nroConcentradorTemp = nroConcentrador.value;
-    const consulta = await agregarConcentrador(URL_API, fechaAlta.value, nroConcentrador.value, localidad.value, dirip.value, calle.value, altura.value);
+    const consulta = await agregarConcentrador(URL_API, fechaAlta.value, nroConcentrador.value, localidad.value, dirip.value, calle.value, altura.value, nroUsuMono.value, nroUsuTri.value, nroAl.value, observaciones.value.trim());
 
     if(consulta.status === 200){
         fechaAlta.value = "";
@@ -199,6 +205,10 @@ formConcentrador.addEventListener('submit', async e => {
         dirip.value = "";
         calle.value= "";
         altura.value = "";
+        nroUsuMono.value =  "";
+        nroUsuTri.value = "";
+        nroAl.value = "";
+        observaciones.value = "";
         infoGuardar.innerHTML= `Se agregó el concentrador ${nroConcentradorTemp} a la base de datos`;
         infoGuardar.style.fontWeight="bold";
         infoGuardar.style.color="#01ED2D";
@@ -229,6 +239,20 @@ formConcentrador.addEventListener('submit', async e => {
 
 
 });
+
+const caracteresBloqueados = ['.','e','E','-',',','+']
+
+const caracteresProhibidos = (evento) => {
+        if (caracteresBloqueados.includes(evento.key)) {
+          evento.preventDefault();
+        }
+
+}
+
+nroUsuMono.addEventListener("keydown", caracteresProhibidos);
+nroUsuTri.addEventListener("keydown", caracteresProhibidos);
+nroAl.addEventListener("keydown", caracteresProhibidos);
+nroConcentrador.addEventListener("keydown", caracteresProhibidos);
 
 
 

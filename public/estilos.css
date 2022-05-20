@@ -51,7 +51,7 @@ body{
   color: black;
 }
 
-.col-form-label{
+.col-form-label, .col-form-labelObser{
   font-weight: bolder;
 }
 
@@ -69,4 +69,13 @@ body{
 
 .modal-content{
   color: white;
+}
+
+/*otorga el color de fondo y el sombreado cuando el foco está en las cajas de texto*/
+.form-control:focus {
+  background: #b3e3ff;
+  border-color: #00f7ff;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 255, 255, 0.6);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 225, 255, 0.6);
 }

@@ -22,6 +22,24 @@ const concentradorSchema = Schema({
         type: String,
         required: [true, 'La altura es obligatoria by mongoose']
     },
+    nro_usuarios_mono:{
+        type: Number,
+        required: true,
+        default: 0
+    },
+    nro_usuarios_tri:{
+        type: Number,
+        required: true,
+        default: 0
+    },
+    nro_alumbrados:{
+        type: Number,
+        required: true,
+        default: 0
+    },
+    observaciones:{
+        type: String
+    },
     ip: {
         type: String,
         required: [true, 'la direccionn IP es obligatoria by mongoose'],
