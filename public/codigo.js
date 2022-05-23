@@ -1,10 +1,11 @@
 import {consultaDB, consultaConcentrador, agregarConcentrador, eliminarConcentrador} from './consultas.js';
 
-
-
 const URL_API = 'https://seg-concentradores.herokuapp.com/';
 const contenedor_tabla = document.querySelector('tbody');
 let data = '';
+
+const txtUsuario = document.querySelector('#txtUsuario');
+const btnCerrarSesion = document.querySelector('#btnCerrarSesion');
 
 const formConcentrador = document.querySelector('form');
 
@@ -41,6 +42,16 @@ const spanObser = document.querySelector('#spanObser');
 
 const modal_body_RegCambios = document.querySelector('.modal-body-RegCambios');
 
+txtUsuario.innerHTML = txtUsuario.innerHTML + `${JSON.parse(localStorage.getItem('usuario-app')).usuario}`;
+
+btnCerrarSesion.addEventListener('click',()=>{
+    let fecha = new Date(Date.now());
+    fecha = fecha.toUTCString();
+    console.log("dentro de btncerrarsesiion");
+    document.cookie = `jwtvalido=;expires=${fecha};path=/`
+    localStorage.removeItem('usuario-app');
+    location.assign(URL_API+'login');
+});
 
 const listarConcentradoresTabla = (datosConcentradores) => {
 
@@ -181,7 +192,6 @@ on(document, 'click', '.btnRegCambios', async e => {
 
 
 const cargarTabla = async () => {
-    console.log("dentro de cargartabla");
     spanCargando.style.display = "block";
     listarConcentradoresTabla(await consultaDB(URL_API));
     spanCargando.style.display = "none";

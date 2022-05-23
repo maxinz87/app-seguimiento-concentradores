@@ -1,7 +1,9 @@
 const  path = require('path');
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const { dbConexion } = require('../db/db_config');
+const { validarJWT } = require('../middlewares/validacionesJWT');
 
 class Servidor {
 
@@ -10,6 +12,8 @@ class Servidor {
         this.port = process.env.PORT;
         this.concentradoresPath = '/api/concentradores';
         this.regCambiosPath = '/admin';
+        this.loginPath = '/login';
+        this.raizPath = '/';
 
         dbConexion();
         this.middlewares();
@@ -18,14 +22,19 @@ class Servidor {
 
     middlewares() {
         this.app.use(cors());
+        this.app.use(cookieParser());
         this.app.use(express.json());
 
-        this.app.use(express.static('public'));
+        this.app.use(express.static('public',{index:false}));
     }
 
     routes() {
 
+        this.app.use(this.raizPath, require('../rutas/raiz'));
+
         this.app.use(this.concentradoresPath, require('../rutas/concentradores'));
+
+        this.app.use(this.loginPath, require('../rutas/login'));
 
         this.app.use(this.regCambiosPath, require('../rutas/admin'));
 

@@ -5,8 +5,6 @@ const listarConcentradores = async (req, res) => {
     try {
         const data = await Concentrador.find().sort({_id: 'desc'});
 
-        console.log(data);
-
         if(!data){
             return res.status(400).json({ok:false, msg:"No hay documentos en la coleccion Concentradores"});
         }
