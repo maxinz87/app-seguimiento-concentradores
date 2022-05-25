@@ -110,8 +110,10 @@ on(document, 'click', '.btnBorrar', e => {
     console.log(nroConcentrador.getAttribute("_id"));
 
     alertify.confirm(`Está seguro de eliminar el concentrador ${nroConcentrador.innerHTML} de la base de datos?`,
-     function(){
+     async function(){
          eliminarConcentrador(URL_API,nroConcentrador.getAttribute("_id"),cargarTabla);
+         actualizaTotalConcentradores(totalConcentradores-1);
+         await PaginacionTabla(totalConcentradores, conXPag);
        alertify.success('concentrador eliminado');
      },
      function(){
@@ -265,6 +267,9 @@ formConcentrador.addEventListener('submit', async e => {
 
 const PaginacionTabla = (total, regXPag) => {
     const paginas = Math.ceil(total/regXPag); //Nro de paginas dado el total de documentos dividido la canntidad de registros a mostrar por paginas. Math.ceil devuelve el entero mayor al nro decimal dado
+    if(paginacion.length>paginas){
+        paginacion.removeChild(paginacion.children(`pag${paginas}`));
+    }
     const fragmento = document.createDocumentFragment();
     //generar paginas
     for(let i=0; i<paginas; i++){
