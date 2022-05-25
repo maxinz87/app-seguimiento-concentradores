@@ -1,7 +1,8 @@
-const consultaDB = async (URL_API) => {
+const consultaDB = async (URL_API, con) => {
     //colocar try catch para manejar los errores asincronos
-    let consulta = await fetch(URL_API+'api/concentradores');
+    let consulta = await fetch(URL_API+`api/concentradores?con=${con}`);
     let resultado = await consulta.json();
+    console.log(resultado);
 
     return resultado;
 }

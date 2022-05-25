@@ -1,9 +1,10 @@
 import {consultaDB, consultaConcentrador, agregarConcentrador, eliminarConcentrador} from './consultas.js';
+import {URL_API} from './var.js';
 
-const URL_API = 'https://seg-concentradores.herokuapp.com/';
 const contenedor_tabla = document.querySelector('tbody');
 let data = '';
 
+const txtTotalCon = document.querySelector('#txtTotalCon');
 const txtUsuario = document.querySelector('#txtUsuario');
 const btnCerrarSesion = document.querySelector('#btnCerrarSesion');
 
@@ -42,7 +43,13 @@ const spanObser = document.querySelector('#spanObser');
 
 const modal_body_RegCambios = document.querySelector('.modal-body-RegCambios');
 
+const paginacion = document.querySelector('.pagination');
+
 txtUsuario.innerHTML = txtUsuario.innerHTML + `${JSON.parse(localStorage.getItem('usuario-app')).usuario}`;
+
+let totalConcentradores = 0;
+let conXPag = 10; //cant Concentradores en tabla por pagina
+let con = 0; //mro de pagina actual
 
 btnCerrarSesion.addEventListener('click',()=>{
     let fecha = new Date(Date.now());
@@ -53,9 +60,15 @@ btnCerrarSesion.addEventListener('click',()=>{
     location.assign(URL_API+'login');
 });
 
+const actualizaTotalConcentradores = (valor) => {
+    totalConcentradores = valor;
+    txtTotalCon.innerHTML = totalConcentradores;
+}
+
 const listarConcentradoresTabla = (datosConcentradores) => {
 
     data = '';
+    actualizaTotalConcentradores(datosConcentradores.total);
 
     if(datosConcentradores.data.length > 0){
         datosConcentradores.data.forEach( concentrador => {
@@ -191,9 +204,9 @@ on(document, 'click', '.btnRegCambios', async e => {
 
 
 
-const cargarTabla = async () => {
+const cargarTabla = async (con) => {
     spanCargando.style.display = "block";
-    listarConcentradoresTabla(await consultaDB(URL_API));
+    listarConcentradoresTabla(await consultaDB(URL_API, con));
     spanCargando.style.display = "none";
 }
 
@@ -244,11 +257,37 @@ formConcentrador.addEventListener('submit', async e => {
         },3000);
     }
 
-
-    cargarTabla();
+    await cargarTabla(0); //carga la pagina del ultimo ingresado
+    await PaginacionTabla(totalConcentradores, conXPag);
 
 
 });
+
+const PaginacionTabla = (total, regXPag) => {
+    const paginas = Math.ceil(total/regXPag); //Nro de paginas dado el total de documentos dividido la canntidad de registros a mostrar por paginas. Math.ceil devuelve el entero mayor al nro decimal dado
+    const fragmento = document.createDocumentFragment();
+    //generar paginas
+    for(let i=0; i<paginas; i++){
+
+        const li = document.createElement('LI');
+        li.className = 'page-item';
+        const enlace = document.createElement('A');
+        enlace.className = 'page-link';
+        enlace.innerHTML = i+1;
+        enlace.id = `pag${i}`
+        on(document,'click',`#pag${i}`, async e => {
+            console.log("click en pagina: ",i);
+            await cargarTabla(10*i);
+            con = i;
+        });
+
+        li.appendChild(enlace);
+        fragmento.appendChild(li);
+    }
+    paginacion.innerHTML = '';
+    paginacion.appendChild(fragmento);
+
+}
 
 const caracteresBloqueados = ['.','e','E','-',',','+']
 
@@ -267,4 +306,7 @@ nroConcentrador.addEventListener("keydown", caracteresProhibidos);
 
 
 //se carga la tabla al abrir la web
-cargarTabla();
+//cargarTabla(con);
+
+await cargarTabla(con),
+await PaginacionTabla(totalConcentradores, conXPag);

@@ -52,7 +52,7 @@ const loginUsuario = async (req, res) => {
         console.log(consulta_usuario);
         if(!consulta_usuario){
             return res.status(400).json({
-                msg: 'Usuario / Contraseña no válido - usuario'
+                msg: 'Credenciales no válidas'
             });
         }
 
@@ -62,7 +62,7 @@ const loginUsuario = async (req, res) => {
         const verificacionPassword = bcryptjs.compareSync(pwd, consulta_usuario.pwd);
         if(!verificacionPassword){
             return res.status(400).json({
-                msg: 'Usuario / Contraseña no válido - contraseña'
+                msg: 'Credenciales no válidas'
             });
         }
 
@@ -71,9 +71,9 @@ const loginUsuario = async (req, res) => {
         const token = await generarJWT(consulta_usuario.id, consulta_usuario.rol); // se le pasa el id y rol del usuario logueado
 
         //se guarda el jwt en una cookie para mantener la sesion
-        res.cookie('jwtvalido',token, {expire : new Date() + 9999});
+        res.cookie('jwtvalido',token);
         
-        res.status(200).json({
+         res.status(200).json({
             ok:true,
             msg:"todo ok!",
             consulta_usuario

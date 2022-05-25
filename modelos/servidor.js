@@ -21,10 +21,9 @@ class Servidor {
     }
 
     middlewares() {
-        this.app.use(cors());
         this.app.use(cookieParser());
+        this.app.use(cors());
         this.app.use(express.json());
-
         this.app.use(express.static('public',{index:false}));
     }
 

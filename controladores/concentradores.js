@@ -2,8 +2,21 @@ const Concentrador = require('../modelos/concentrador');
 
 const listarConcentradores = async (req, res) => {
 
+    //paginacion
+    const{con = 0} = req.query; //con es concentrador. desde qué concentrador comienza a mostrar los resultados;
+
+    console.log(req.query);
+    console.log(req);
+
     try {
-        const data = await Concentrador.find().sort({_id: 'desc'});
+
+        const [total, data] = await Promise.all([
+            Concentrador.countDocuments(),
+            Concentrador.find()
+            .skip(Number(con))
+            .limit(10)
+            .sort({_id: 'desc'})
+        ]);
 
         if(!data){
             return res.status(400).json({ok:false, msg:"No hay documentos en la coleccion Concentradores"});
@@ -11,6 +24,7 @@ const listarConcentradores = async (req, res) => {
 
         res.status(200).json({
             ok: true,
+            total,
             data
         });
 
