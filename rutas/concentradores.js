@@ -5,14 +5,22 @@ const { agregarConcentrador,
         eliminarConcentrador, 
         listarConcentrador} = require('../controladores/concentradores');
 const { ValDeCampos, existeConcentrador, existeCampo } = require('../middlewares/validacionesDeCampos');
+const { validarJWT } = require('../middlewares/validacionesJWT');
 
 const router = Router();
 
-router.get('/', listarConcentradores);
+router.get('/', [
+    validarJWT,
+    ValDeCampos
+], listarConcentradores);
 
-router.get('/:id', listarConcentrador);
+router.get('/:id', [
+    validarJWT,
+    ValDeCampos
+], listarConcentrador);
 
 router.post('/', [
+    validarJWT,
     check('numero', 'El nro de concentrador es obligatorio').not().isEmpty({delimiters:'-'}),
     check('fecha_alta','La fecha debe ser válida').isISO8601(),
     check('localidad', 'La localidad es obligatoria').not().isEmpty(),
@@ -28,7 +36,9 @@ router.post('/', [
 ], agregarConcentrador);
 
 router.delete('/:id', [
-    check('id', 'El id de concentrador es obligatorio').isMongoId()
+    validarJWT,
+    check('id', 'El id de concentrador es obligatorio').isMongoId(),
+    ValDeCampos
 ], eliminarConcentrador);
 
 module.exports = router;

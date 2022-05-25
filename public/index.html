@@ -23,70 +23,84 @@
       <a id="btnCerrarSesion" class="w-100 text-center bg-black">cerrar sesion</a>
     </div>
 
-    <div class="container">
-        <form>
-          <div class="row">
-            <div class="mb-3 col-md-6">
-              <label for="" class="col-form-label">Nro. concentrador:</label>
-              <input id="nroConcentrador" class="form-control" type="number" autofocus>
+    <div class="accordion accordion-flush my-4" id="accordionFlushExample">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="flush-headingOne">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+            Formulario Alta concentrador
+          </button>
+        </h2>
+        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+          <div class="accordion-body">
+            <div class="container">
+              <form>
+                <div class="row">
+                  <div class="mb-3 col-md-6">
+                    <label for="" class="col-form-label">Nro. concentrador:</label>
+                    <input id="nroConcentrador" class="form-control" type="number" autofocus>
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label for="" class="col-form-label">Fecha alta:</label>
+                  <input id="fechaAlta" class="form-control" type="date" >
+              </div>
+                </div>
+      
+                  <div class="mb-3">
+                      <label for="" class="col-form-label">Localidad:</label>
+                      <input id="localidad" class="form-control" type="text" >
+                  </div>
+      
+                  <div class="row">
+                    <div class="mb-3 col-md-6">
+                      <label for="" class="col-form-label">Calle:</label>
+                      <input id="calle" class="form-control" type="text" >
+                    </div>
+                    <div class="mb-3 col-md-6">
+                      <label for="" class="col-form-label">Altura:</label>
+                      <input id="altura" class="form-control" type="text" >
+                    </div>
+                  </div>
+      
+                  <div class="mb-3">
+                      <label for="" class="col-form-label">dirección IP:</label>
+                      <input id="dirIP" class="form-control" type="text" >
+                  </div>
+      
+                  <div class="row">
+                    <div class="mb-3 col-md-4">
+                      <label for="" class="col-form-label">nro usuarios monofásicos:</label>
+                      <input id="nroUsuMono" class="form-control" type="number" >
+                    </div>
+          
+                    <div class="mb-3 col-md-4">
+                      <label for="" class="col-form-label">nro usuarios trifásicos:</label>
+                      <input id="nroUsuTri" class="form-control" type="number" >
+                    </div>
+          
+                    <div class="mb-3 col-md-4">
+                      <label for="" class="col-form-label">nro alumbrados:</label>
+                      <input id="nroAl" class="form-control" type="number" >
+                    </div>
+                  </div>
+      
+                <div class="mb-4">
+                  <label for="" class="col-form-label">observaciones:</label>
+                  <textarea class="form-control" id="observaciones" cols="30" rows="5"></textarea>
+      
+                </div>
+                  <div class="container text-center">
+                      <button id="btnGuardar" class="btn btn-success mb-4" type="submit">Guardar</button>
+                      <br>
+                      <span style="display:none;" id="infoGuardar"> </span>
+                  </div>
+      
+              </form>
           </div>
-          <div class="mb-3 col-md-6">
-            <label for="" class="col-form-label">Fecha alta:</label>
-            <input id="fechaAlta" class="form-control" type="date" >
+          </div>
         </div>
-          </div>
-
-            <div class="mb-3">
-                <label for="" class="col-form-label">Localidad:</label>
-                <input id="localidad" class="form-control" type="text" >
-            </div>
-
-            <div class="row">
-              <div class="mb-3 col-md-6">
-                <label for="" class="col-form-label">Calle:</label>
-                <input id="calle" class="form-control" type="text" >
-              </div>
-              <div class="mb-3 col-md-6">
-                <label for="" class="col-form-label">Altura:</label>
-                <input id="altura" class="form-control" type="text" >
-              </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="" class="col-form-label">dirección IP:</label>
-                <input id="dirIP" class="form-control" type="text" >
-            </div>
-
-            <div class="row">
-              <div class="mb-3 col-md-4">
-                <label for="" class="col-form-label">nro usuarios monofásicos:</label>
-                <input id="nroUsuMono" class="form-control" type="number" >
-              </div>
-    
-              <div class="mb-3 col-md-4">
-                <label for="" class="col-form-label">nro usuarios trifásicos:</label>
-                <input id="nroUsuTri" class="form-control" type="number" >
-              </div>
-    
-              <div class="mb-3 col-md-4">
-                <label for="" class="col-form-label">nro alumbrados:</label>
-                <input id="nroAl" class="form-control" type="number" >
-              </div>
-            </div>
-
-          <div class="mb-4">
-            <label for="" class="col-form-label">observaciones:</label>
-            <textarea class="form-control" id="observaciones" cols="30" rows="5"></textarea>
-
-          </div>
-            <div class="container text-center">
-                <button id="btnGuardar" class="btn btn-success mb-4" type="submit">Guardar</button>
-                <br>
-                <span style="display:none;" id="infoGuardar"> </span>
-            </div>
-
-        </form>
+      </div>
     </div>
+
     <div class="">
 
         <table id="tablaConcentradores" class="table table-dark mt-2 table-bordered table-striped">
@@ -168,15 +182,18 @@
 </div>
 
 <div class="modal fade modalRegCambios" id="modalRegCambios" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Registro de cambios</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <!-- Scrollable modal -->
+
       <div class="modal-body modal-body-RegCambios my-0">
 
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 
