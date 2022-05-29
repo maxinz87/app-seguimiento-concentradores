@@ -9,14 +9,15 @@ const { validarJWT } = require('../middlewares/validacionesJWT');
 
 const router = Router();
 
-router.get('/', [
-    validarJWT,
-    ValDeCampos
+
+router.get('/:tipo/:termino', [
+//    validarJWT,
+//    ValDeCampos
 ], listarConcentradores);
 
 router.get('/:id', [
-    validarJWT,
-    ValDeCampos
+    //validarJWT,
+    //ValDeCampos
 ], listarConcentrador);
 
 router.post('/', [

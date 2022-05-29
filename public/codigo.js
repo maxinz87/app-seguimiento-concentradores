@@ -25,6 +25,14 @@ const observaciones = document.querySelector('#observaciones');
 localidad.value = "Rafaela";
 localidad.disabled = true;
 
+//Busqueda
+const selectBusqueda = document.querySelector('#selectBusqueda');
+const inputBusqueda = document.querySelector('#inputBusqueda');
+const btnBuscar = document.querySelector('#btnBuscar');
+const txtInfoBusquedaParam = document.querySelector('#txtInfoBusquedaParam');
+const txtInfoBusqueda = document.querySelector('#txtInfoBusqueda');
+const btnQuitFiltro = document.querySelector('#btnQuitFiltro');
+
 const spanCargando = document.querySelector('#spanCargando');
 const infoGuardar = document.querySelector('#infoGuardar');
 const modalMasInfo = new bootstrap.Modal(document.getElementById('modalMasInfo'),{backdrop:'static'});
@@ -47,17 +55,47 @@ const paginacion = document.querySelector('.pagination');
 
 txtUsuario.innerHTML = txtUsuario.innerHTML + `${JSON.parse(localStorage.getItem('usuario-app')).usuario}`;
 
+//Se inicializa variables de parametros de busqueda en API.
+let tipoBusqueda = 'completo';
+let termino = "full"; //la variable termino debe contener siempre un valor debido a que si contiene una cadena vacia, null o undefined se crea un conflicto con la ruta listarConcentrador
+
 let totalConcentradores = 0;
 let conXPag = 10; //cant Concentradores en tabla por pagina
-let con = 0; //mro de pagina actual
+let conPagActual = 0; //mro de pagina actual
+
 
 btnCerrarSesion.addEventListener('click',()=>{
     let fecha = new Date(Date.now());
     fecha = fecha.toUTCString();
     console.log("dentro de btncerrarsesiion");
-    document.cookie = `jwtvalido=;expires=${fecha};path=/`
+    document.cookie = `jwtvalido=;path=/;max-age=0`
     localStorage.removeItem('usuario-app');
     location.assign(URL_API+'login');
+});
+
+btnBuscar.addEventListener('click', async e => {
+
+    console.log("conPagActual: ", conPagActual);
+    if(selectBusqueda.value!=="" && inputBusqueda.value !== ""){
+        tipoBusqueda = selectBusqueda.value;
+        termino = inputBusqueda.value;
+        await cargarTabla(selectBusqueda.value,inputBusqueda.value,0);
+        await PaginacionTabla(totalConcentradores, conXPag);
+        txtInfoBusquedaParam.innerHTML = selectBusqueda.options[selectBusqueda.selectedIndex].text + ' = ' + termino;
+        txtInfoBusqueda.style.display = "inline";
+    }
+});
+
+btnQuitFiltro.addEventListener('click', async e => {
+
+    if(selectBusqueda.value!=="" && inputBusqueda.value !== "" && tipoBusqueda !== 'completo'){
+        tipoBusqueda = 'completo';
+        termino = 'full';
+        await cargarTabla(tipoBusqueda,termino,0);
+        await PaginacionTabla(totalConcentradores, conXPag);
+        txtInfoBusquedaParam.innerHTML = "";
+        txtInfoBusqueda.style.display = "none";
+    }
 });
 
 const actualizaTotalConcentradores = (valor) => {
@@ -70,6 +108,7 @@ const listarConcentradoresTabla = (datosConcentradores) => {
     data = '';
     actualizaTotalConcentradores(datosConcentradores.total);
 
+    console.log(datosConcentradores.data);
     if(datosConcentradores.data.length > 0){
         datosConcentradores.data.forEach( concentrador => {
             //<a target="_blank" href="http://'+ip+'">'+ ip + '</a>'
@@ -111,7 +150,9 @@ on(document, 'click', '.btnBorrar', e => {
 
     alertify.confirm(`Está seguro de eliminar el concentrador ${nroConcentrador.innerHTML} de la base de datos?`,
      async function(){
-         eliminarConcentrador(URL_API,nroConcentrador.getAttribute("_id"),cargarTabla);
+         if(eliminarConcentrador(URL_API,nroConcentrador.getAttribute("_id")))
+            await cargarTabla(tipoBusqueda,termino,0);
+         
          actualizaTotalConcentradores(totalConcentradores-1);
          await PaginacionTabla(totalConcentradores, conXPag);
        alertify.success('concentrador eliminado');
@@ -206,9 +247,9 @@ on(document, 'click', '.btnRegCambios', async e => {
 
 
 
-const cargarTabla = async (con) => {
+const cargarTabla = async (tipoBusqueda,termino,con) => {
     spanCargando.style.display = "block";
-    listarConcentradoresTabla(await consultaDB(URL_API, con));
+    listarConcentradoresTabla(await consultaDB(URL_API, tipoBusqueda, termino, con));
     spanCargando.style.display = "none";
 }
 
@@ -259,7 +300,7 @@ formConcentrador.addEventListener('submit', async e => {
         },3000);
     }
 
-    await cargarTabla(0); //carga la pagina del ultimo ingresado
+    await cargarTabla(tipoBusqueda, termino, 0); //carga la pagina del ultimo ingresado
     await PaginacionTabla(totalConcentradores, conXPag);
 
 
@@ -282,8 +323,8 @@ const PaginacionTabla = (total, regXPag) => {
         enlace.id = `pag${i}`
         on(document,'click',`#pag${i}`, async e => {
             console.log("click en pagina: ",i);
-            await cargarTabla(10*i);
-            con = i;
+            await cargarTabla(tipoBusqueda,termino,10*i);
+            conPagActual = i;
         });
 
         li.appendChild(enlace);
@@ -308,10 +349,82 @@ nroUsuTri.addEventListener("keydown", caracteresProhibidos);
 nroAl.addEventListener("keydown", caracteresProhibidos);
 nroConcentrador.addEventListener("keydown", caracteresProhibidos);
 
+const btnDescargaLista = document.querySelector('#btnDescargaLista');
+
+btnDescargaLista.addEventListener('click', async e => {
+    await creaXLSX();
+});
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'; //cadena con informacion para exportacin en formato .xlsx
+const EXCEL_TYPE = 'application/vnd.oasis.opendocument.spreadsheet;charset=UTF-8';
+const EXCEL_EXTENSION = '.ods';
+const creaXLSX = async () => {
+
+    const datoss = await consultaDB(URL_API, tipoBusqueda,termino,0,0);
+
+    //Se parsea los objetos dentro de datoss para poder excluir y exportar los datos necesarios
+    await datoss.data.forEach( documento => {
+        //const fecha = new Date(documento.fecha_alta);
+        //documento.fecha_alta = `${fecha.getUTCDate()}/${fecha.getUTCMonth()+1}/${fecha.getUTCFullYear()}`
+        delete documento._id;
+        delete documento.__v;
+    });
+
+    const encabezados_parseados = {fecha_alta:'Fecha alta', numero: 'Nro. concentrador', localidad: 'Localidad', calle: 'Calle', altura: 'Altura', nro_usuarios_mono: 'Nro. usuarios monofásicos', nro_usuarios_tri: 'Nro. usuarios trifásicos', nro_alumbrados: 'Nro. alumbrados', observaciones: 'Observaciones', ip: 'Dirección IP'};
+    const encabezados = Object.keys(encabezados_parseados); //arreglo de las claves del objeto encabezados_parseados
+    const encabezados_tipos = {fecha_alta:'d',numero:'s',localidad:'s',calle:'s',altura:'s',nro_usuarios_mono:'n',nro_usuarios_tri:'n',nro_alumbrados:'n',observaciones:'s',ip:'s'}
+    datoss.data.unshift(encabezados_parseados);
+
+    const worksheet = XLSX.utils.json_to_sheet(datoss.data,{ skipHeader: true, });
+            
+
+            let range = XLSX.utils.decode_range(worksheet['!ref']);
+
+            for(let R = 1; R <= range.e.r; ++R) {
+                let contador = 0;
+            for( const encabezado in encabezados_tipos) {
+              let cell_address = {c:contador, r:R};
+              contador++;
+              /* if an A1-style address is needed, encode the address */
+              let cell_ref = XLSX.utils.encode_cell(cell_address);
+              // console.log(cell_ref); //muestra el nro de celda
+          
+              if(!worksheet[cell_ref]) continue;
+            /* `.t == "n"` for number cells */
+            //console.log("antes: ",worksheet[cell_ref]); //muestra el tipo con .t y el contenido de la celda con .v
+            worksheet[cell_ref].t = encabezados_tipos[encabezado];
+            //console.log(worksheet[cell_ref]);
+            }
+          }
+          
+
+
+    //['Fecha alta','Nro. concentrador','Localidad','Calle','Altura','Nro. usuarios monofásicos','Nro. usuarios trifásicos','Nro. alumbrados','Observaciones','Dirección IP']
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "sheet1");
+
+//    const workbook = {
+//        Sheets:{
+//            'data':worksheet
+//        },
+//        SheetNames:['data']
+//    };
+
+    const excelBuffer = XLSX.write(workbook,{bookType:'ods', type:'array'});
+
+    descargaXLSX(excelBuffer,'reporte_'+tipoBusqueda+'_'+termino);
+}
+
+const descargaXLSX = (buffer, nombre_archivo)=>{
+    const data = new Blob([buffer], {type: EXCEL_TYPE});
+    saveAs(data, nombre_archivo+EXCEL_EXTENSION);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------
 
 
 //se carga la tabla al abrir la web
 //cargarTabla(con);
 
-await cargarTabla(con),
+await cargarTabla(tipoBusqueda,termino,conPagActual);
 await PaginacionTabla(totalConcentradores, conXPag);

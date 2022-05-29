@@ -15,7 +15,7 @@ formLogin.addEventListener('submit', async e => {
     const consulta = await fetch(URL_API+'login', {
         method: 'POST',
         credentials: 'include', //parametro importante para que el navegador guarde la cookie enviada por el servidor
-        redirect: 'follow',
+
         headers: {
             'content-type': 'application/json'
         },

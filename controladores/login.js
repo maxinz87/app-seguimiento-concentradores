@@ -71,7 +71,7 @@ const loginUsuario = async (req, res) => {
         const token = await generarJWT(consulta_usuario.id, consulta_usuario.rol); // se le pasa el id y rol del usuario logueado
 
         //se guarda el jwt en una cookie para mantener la sesion
-        res.cookie('jwtvalido',token);
+        res.cookie('jwtvalido',token,{ expires: new Date(Date.now() + 43200000) }); //se guarda la cookie por 12 horas (43200000 milisegundos)
         
          res.status(200).json({
             ok:true,

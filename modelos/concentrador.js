@@ -6,7 +6,7 @@ const concentradorSchema = Schema({
         required: [true, 'El numero de concentrador es obligatorio by mongoose']
     },
     numero: {
-        type: Number,
+        type: String,
         required: [true, 'El numero de concentrador es obligatorio by mongoose'],
         unique: true
     },

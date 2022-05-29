@@ -99,10 +99,69 @@
           </div>
         </div>
       </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="flush-headingTwo">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+            Búsqueda
+          </button>
+        </h2>
+        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+          <div class="accordion-body">
+            <div class="container">
+              <form >
+                <div class="row">
+                  <div class="mb-3 col-md-4">
+      
+                    <label for="" class="col-form-label">Búsqueda:</label>
+                    <input id="inputBusqueda" class="form-control" type="text" >
+                    <select id="selectBusqueda" class="form-select mt-3" aria-label="Default select example">
+                      <option value="" disabled selected>Elija una opción de búsqueda:</option>
+                      <option value="nroConcentrador" >Nro. concentrador</option>
+                    </select>
+                  </div>
+                  <div class="row w-100 m-0 p-0">
+                    <div class="col-md-4">
+                      <button id="btnBuscar" class="btn btn-primary mb-4 float-start" type="button">Buscar</button>
+                      <button id="btnQuitFiltro" class="btn btn-warning float-end" type="button">Quitar filtro</button>
+                      <br>
+                      <span style="display:none;" id="infoGuardar"> </span>
+                    </div>
+      
+                </div>
+                </div>
+              </form>
+      
+            </div>
+            </div>
+          </div>
+        </div>
+
+
     </div>
 
-    <div class="">
-        <span>Total concentradores en base de datos: </span><span style="font-weight: bold;" id="txtTotalCon"></span>
+
+        <div class="row infoTabla d-flex align-items-end">
+          <div class="mb-3 col-10">
+
+            <div class="row" >
+              <div class="col-sm-12">
+                <span id="txtInfoBusqueda" style="display:none;">Filtro de búsqueda: </span><span style="font-weight: bold;" id="txtInfoBusquedaParam"></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 h-100">
+                <span>Concentradores en base de datos: </span><span style="font-weight: bold;" id="txtTotalCon"></span>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3 col-2">
+            <a id="btnDescargaLista" title="Descargar planilla"><img src="./imagenes/ods.png" style="width: 40px; float: right; cursor: pointer;" alt=""></a>            
+          </div>
+        </div>
+
+        
+
         <table id="tablaConcentradores" class="table table-dark mt-2 table-bordered table-striped">
             <thead class="table-dark">
                 <tr class="text-center">
@@ -220,6 +279,8 @@
 
 </footer>
 
+<script src="FileSaver.js"></script>
+<script lang="javascript" src="xlsx.full.min.js"></script>
 <script src="https://kit.fontawesome.com/f8fec4fe05.js" crossorigin="anonymous"></script>
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>

@@ -1,8 +1,7 @@
-const consultaDB = async (URL_API, con) => {
+const consultaDB = async (URL_API, tipoBusqueda, termino, con, limite = 10) => { //con es a partir de qué concentrador se realiza la consulta
     //colocar try catch para manejar los errores asincronos
-    let consulta = await fetch(URL_API+`api/concentradores?con=${con}`);
+    let consulta = await fetch(URL_API+`api/concentradores/${tipoBusqueda}/${termino}?con=${con}&limite=${limite}`);
     let resultado = await consulta.json();
-    console.log(resultado);
 
     return resultado;
 }
@@ -35,7 +34,7 @@ const agregarConcentrador = async (URL_API, fechaAlta, nroConcentrador, localida
     });
 }
 
-const eliminarConcentrador = async (URL_API, _id, callback) => {
+const eliminarConcentrador = async (URL_API, _id) => {
     let consulta = await fetch(URL_API+`api/concentradores/${_id}`, {
         method: 'DELETE'
     });
@@ -43,10 +42,10 @@ const eliminarConcentrador = async (URL_API, _id, callback) => {
     let resultado = await consulta.json();
 
     if(resultado){
-        console.log("dentro funcion eliminarConcentrador");
-        //cargarTabla();
-        callback();
+        return true;
     }
+    else
+        return false;
 }
 
 export {consultaDB, consultaConcentrador, agregarConcentrador, eliminarConcentrador};
