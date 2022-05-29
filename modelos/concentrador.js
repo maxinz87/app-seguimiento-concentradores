@@ -44,6 +44,11 @@ const concentradorSchema = Schema({
         type: String,
         required: [true, 'la direccionn IP es obligatoria by mongoose'],
         unique: true
+    },
+    usuario: {
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario',
+        required: [true, 'el usuario es obligatorio by mongoose']
     }
 }, {collection: 'concentradores'});
 

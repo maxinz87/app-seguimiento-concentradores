@@ -8,8 +8,6 @@ const listarConcentradores = async (req, res) => {
     const{con = 0, limite = 10} = req.query; //con es concentrador. desde qué concentrador comienza a mostrar los resultados;
     const { tipo, termino } = req.params;
 
-    console.log("parametros query: ",con, limite, tipo, termino);
-
     if(!listaTipoBusqueda.includes(tipo)){
         return res.status(400).json({
             ok: false,
@@ -28,6 +26,7 @@ const listarConcentradores = async (req, res) => {
                 [total, data] = await Promise.all([
                     Concentrador.countDocuments(),
                     Concentrador.find()
+                    .populate('usuario','usuario')
                     .skip(Number(con))
                     .limit(limite)
                     .sort({_id: 'desc'})
@@ -40,6 +39,7 @@ const listarConcentradores = async (req, res) => {
                     [total, data] = await Promise.all([
                     Concentrador.countDocuments({numero: regex}),
                     Concentrador.find({numero: regex})
+                    .populate('usuario','usuario')
                     .skip(Number(con))
                     .limit(limite)
                     .sort({_id: 'desc'})
@@ -65,7 +65,6 @@ const listarConcentradores = async (req, res) => {
             return res.status(400).json({ok:false, msg:"No hay documentos en la coleccion Concentradores"});
         }
 
-        console.log({total, data, msg});
         res.status(200).json({
             ok: true,
             total,
@@ -84,7 +83,8 @@ const listarConcentrador = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const data = await Concentrador.findById(id);
+        const data = await Concentrador.findById(id)
+                                        .populate('usuario','usuario');
 
         if(!data){
             return res.status(400).json({ok:false, msg:"el documento no existe en la coleccion Concentradores"});
@@ -105,6 +105,8 @@ const agregarConcentrador = async (req, res) => {
 
     const data = req.body;
 
+    console.log("id del usuario que agregó el concentrador: ", req.uid);
+
     if(data.nro_usuarios_mono)
         data.nro_usuarios_mono = Math.floor(data.nro_usuarios_mono);
 
@@ -114,7 +116,10 @@ const agregarConcentrador = async (req, res) => {
     if(data.nro_alumbrados)
         data.nro_alumbrados = Math.floor(data.nro_alumbrados);
 
-    const concentrador = new Concentrador(data);
+    const concentrador = new Concentrador({
+        usuario: req.uid,
+        ...data
+    });
 
     await concentrador.save();
 

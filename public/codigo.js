@@ -48,6 +48,7 @@ const spanUMono = document.querySelector('#spanUMono');
 const spanUTri = document.querySelector('#spanUTri');
 const spanNroAl = document.querySelector('#spanNroAl');
 const spanObser = document.querySelector('#spanObser');
+const spanUsuario = document.querySelector('#spanUsuario');
 
 const modal_body_RegCambios = document.querySelector('.modal-body-RegCambios');
 
@@ -108,7 +109,6 @@ const listarConcentradoresTabla = (datosConcentradores) => {
     data = '';
     actualizaTotalConcentradores(datosConcentradores.total);
 
-    console.log(datosConcentradores.data);
     if(datosConcentradores.data.length > 0){
         datosConcentradores.data.forEach( concentrador => {
             //<a target="_blank" href="http://'+ip+'">'+ ip + '</a>'
@@ -171,10 +171,14 @@ on(document, 'click', '.btnMasInfo', async e => {
     const resultado = await consultaConcentrador(URL_API,_id);
 
     const datos = resultado.data; 
+
     const fecha = new Date(datos.fecha_alta); //Se parsea la fecha a tipo válido
 
 
     modal_title.innerHTML = `Concentrador nro ${e.target.parentNode.parentNode.children[0].innerHTML}`;
+    if(datos.usuario){ //este condificional borrarlo cuando se normalice el campo "usuario" en TODOS LOS DOCUMENTOS DE LA BD
+        spanUsuario.innerHTML = datos.usuario.usuario;
+    }
     spanFecha.innerHTML = `${fecha.getUTCDate()}/${fecha.getUTCMonth()+1}/${fecha.getUTCFullYear()}`;
     spanNro.innerHTML = e.target.parentNode.parentNode.children[0].innerHTML;
     spanUbi.innerHTML = e.target.parentNode.parentNode.children[1].innerHTML;
@@ -349,11 +353,7 @@ nroUsuTri.addEventListener("keydown", caracteresProhibidos);
 nroAl.addEventListener("keydown", caracteresProhibidos);
 nroConcentrador.addEventListener("keydown", caracteresProhibidos);
 
-const btnDescargaLista = document.querySelector('#btnDescargaLista');
 
-btnDescargaLista.addEventListener('click', async e => {
-    await creaXLSX();
-});
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'; //cadena con informacion para exportacin en formato .xlsx
@@ -365,13 +365,16 @@ const creaXLSX = async () => {
 
     //Se parsea los objetos dentro de datoss para poder excluir y exportar los datos necesarios
     await datoss.data.forEach( documento => {
+        if(documento.usuario){
+            documento.usuario = documento.usuario.usuario;
+        }
         //const fecha = new Date(documento.fecha_alta);
         //documento.fecha_alta = `${fecha.getUTCDate()}/${fecha.getUTCMonth()+1}/${fecha.getUTCFullYear()}`
         delete documento._id;
         delete documento.__v;
     });
 
-    const encabezados_parseados = {fecha_alta:'Fecha alta', numero: 'Nro. concentrador', localidad: 'Localidad', calle: 'Calle', altura: 'Altura', nro_usuarios_mono: 'Nro. usuarios monofásicos', nro_usuarios_tri: 'Nro. usuarios trifásicos', nro_alumbrados: 'Nro. alumbrados', observaciones: 'Observaciones', ip: 'Dirección IP'};
+    const encabezados_parseados = {fecha_alta:'Fecha alta', numero: 'Nro. concentrador', localidad: 'Localidad', calle: 'Calle', altura: 'Altura', nro_usuarios_mono: 'Nro. usuarios monofásicos', nro_usuarios_tri: 'Nro. usuarios trifásicos', nro_alumbrados: 'Nro. alumbrados', observaciones: 'Observaciones', ip: 'Dirección IP', usuario: 'Usuario'};
     const encabezados = Object.keys(encabezados_parseados); //arreglo de las claves del objeto encabezados_parseados
     const encabezados_tipos = {fecha_alta:'d',numero:'s',localidad:'s',calle:'s',altura:'s',nro_usuarios_mono:'n',nro_usuarios_tri:'n',nro_alumbrados:'n',observaciones:'s',ip:'s'}
     datoss.data.unshift(encabezados_parseados);
@@ -420,6 +423,12 @@ const descargaXLSX = (buffer, nombre_archivo)=>{
     const data = new Blob([buffer], {type: EXCEL_TYPE});
     saveAs(data, nombre_archivo+EXCEL_EXTENSION);
 }
+
+const btnDescargaLista = document.querySelector('#btnDescargaLista');
+
+btnDescargaLista.addEventListener('click', async e => {
+    await creaXLSX();
+});
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 
