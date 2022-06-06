@@ -130,6 +130,33 @@ const agregarConcentrador = async (req, res) => {
     });
 }
 
+const actualizarConcentrador = async (req, res) => {
+
+    const { id } = req.params;
+
+    //se saca localidad provisoriamente hasta que se agreguen nuevas localidades
+    const {_id, numero, localidad, ...info} = req.body;
+
+    console.log("id: ", id);
+    console.log("info: ", info);
+
+    try {
+        const concentrador = await Concentrador.findByIdAndUpdate(id, info, {new: true}); //1er parametro es el id a modificar. 2do parametro es la info que se modifica, 3er parametro devuelve el documento actualzado con la nueva info.
+
+        res.status(200).json( {
+            ok: true,
+            msg: 'Concentrador actualizado de forma exitosa!',
+            concentrador
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg:'hubo un error al actualizar el documento'
+        });
+    }
+}
+
 const eliminarConcentrador = async (req, res) => {
 
     const { id } = req.params;
@@ -157,5 +184,6 @@ module.exports = {
     agregarConcentrador,
     listarConcentradores,
     eliminarConcentrador,
-    listarConcentrador
+    listarConcentrador,
+    actualizarConcentrador
 }

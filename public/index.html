@@ -200,56 +200,115 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btnCerrarModal" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form>
           <div class="text-end" style="font-size:12px;">
             <label for="recipient-name" class="col-form-label">Agregado por:</label>
             <span id="spanUsuario"></span>
+            
           </div>
-          <div class="mb-3">
+          <div class="input-group mb-3">
             <label for="recipient-name" class="col-form-label">fecha alta:</label>
-            <span id="spanFecha"></span>
+            <span class="input-group-text spanMod" id="spanFecha"></span>
           </div>
-          <div class="mb-3">
+          <div class="input-group mb-3">
             <label for="recipient-name" class="col-form-label">nro serie:</label>
-            <span id="spanNro"></span>
+            <span class="input-group-text spanMod" id="spanNro"></span>
           </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">ubicación:</label>
-            <span id="spanUbi"></span>
+          <div class="input-group mb-3">
+            <label for="recipient-name" class="col-form-label labelUbicacion" >ubicación:</label>
+            <span class="input-group-text spanMod" id="spanUbi"></span>
+
           </div>
-          <div class="mb-3">
+          <div class="input-group mb-3">
             <label for="recipient-name" class="col-form-label">IP:</label>
-            <span id="spanIP"></span>
+            <span class="input-group-text spanMod" id="spanIP"></span>
           </div>
-          <div class="mb-3">
+          <div class="input-group mb-3">
             <label for="message-text" class="col-form-label">usuarios monofásicos:</label>
-            <span id="spanUMono"></span>
+            <span class="input-group-text spanMod" id="spanUMono"></span>
           </div>
-          <div class="mb-3">
+          <div class="input-group mb-3">
             <label for="message-text" class="col-form-label">usuarios trifásicos:</label>
-            <span id="spanUTri"></span>
+            <span class="input-group-text spanMod" id="spanUTri"></span>
           </div>
-          <div class="mb-3">
+          <div class="input-group mb-3">
             <label for="message-text" class="col-form-label">alumbrados:</label>
-            <span id="spanNroAl"></span>
+            <span class="input-group-text spanMod" id="spanNroAl"></span>
           </div>
-          <div class="mb-3">
+          <div class="input-group mb-3">
             <label for="message-text" class="col-form-label">total usuarios:</label>
-            <span id="spanTotal"></span>
+            <span class="input-group-text" id="spanTotal"></span>
           </div>
-          <div class="mb-3">
+          <div class="input-group mb-3">
             <label for="message-text" class="col-form-labelObser">observaciones:</label>
-            <span id="spanObser"></span>
+            <span class="spanMod" id="spanObser"></span>
           </div>
         </form>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      <div class="modal-footer-mod p-3">
+        <button type="button" id="btnModificar" class="btn btn-success" data-bs-target="#modalActualizarConcentrador" data-bs-toggle="modal">Modificar</button>
+        <button type="button" class="btn btn-secondary float-end btnCerrarModal" data-bs-dismiss="modal">Cerrar</button>
 
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalActualizarConcentrador" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalToggleLabel2"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="formActualizaConcentrador">
+        <div class="modal-body">
+          <div class="input-group mb-3">
+            <label for="recipient-name" class="col-form-label">fecha alta:</label>
+            <input id="inputModFecha" name="fecha_alta" class="form-control inputMod" type="date">
+          </div>
+          <div class="input-group mb-3">
+            <label for="recipient-name" class="col-form-label labelUbicacion" >Localidad:</label>
+            <input id="inputModLocalidad" name="localidad" placeholder="Localidad" class="form-control inputMod" type="text">
+          </div>
+          <div class="input-group mb-3">
+            <label for="recipient-name" class="col-form-label">calle:</label>
+            <input id="inputModCalle" name="calle" placeholder="Calle" class="form-control inputMod" type="text">
+          </div>
+          <div class="input-group mb-3">
+            <label for="recipient-name" class="col-form-label">altura:</label>
+            <input id="inputModAltura" name="altura" placeholder="Altura" class="form-control inputMod" type="text">
+          </div>
+          <div class="input-group mb-3">
+            <label for="recipient-name" class="col-form-label">IP:</label>
+            <input id="inputModIp" name="ip" class="form-control inputMod" type="text">
+          </div>
+          <div class="input-group mb-3">
+            <label for="message-text" class="col-form-label">usuarios monofásicos:</label>
+            <input id="inputModUMono" name="nro_usuarios_mono" class="form-control inputMod" type="number">
+          </div>
+          <div class="input-group mb-3">
+            <label for="message-text" class="col-form-label">usuarios trifásicos:</label>
+            <input id="inputModUTri" name="nro_usuarios_tri" class="form-control inputMod" type="number">
+          </div>
+          <div class="input-group mb-3">
+            <label for="message-text" class="col-form-label">alumbrados:</label>
+            <input id="inputModAl" name="nro_alumbrados" class="form-control inputMod" type="number">
+          </div>
+          <div class="input-group mb-3">
+            <label for="message-text" class="col-form-labelObser">observaciones:</label>
+            <textarea class="form-control inputMod" name="observaciones" id="inputModObser" cols="30" rows="5"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer-mod p-3">
+          <button class="btn btn-success" type="submit">confirmar actualización</button>
+          <button class="btn btn-primary float-end" data-bs-target="#modalMasInfo" data-bs-toggle="modal" type="button">volver</button>
+
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -267,8 +326,8 @@
 
       </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      <div class="modal-footer-mod p-3">
+        <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Cerrar</button>
 
       </div>
     </div>

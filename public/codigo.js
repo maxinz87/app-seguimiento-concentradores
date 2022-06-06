@@ -1,4 +1,4 @@
-import {consultaDB, consultaConcentrador, agregarConcentrador, eliminarConcentrador} from './consultas.js';
+import {consultaDB, consultaConcentrador, agregarConcentrador, eliminarConcentrador, actualizarConcentrador} from './consultas.js';
 import {URL_API} from './var.js';
 
 const contenedor_tabla = document.querySelector('tbody');
@@ -39,7 +39,7 @@ const modalMasInfo = new bootstrap.Modal(document.getElementById('modalMasInfo')
 const modalRegCambios = new bootstrap.Modal(document.getElementById('modalRegCambios'),{backdrop:'static'});
 
 
-const modal_title = document.querySelector('.modal-title');
+const modal_title = document.querySelectorAll('.modal-title');
 const spanNro = document.querySelector('#spanNro');
 const spanIP = document.querySelector('#spanIP');
 const spanUbi = document.querySelector('#spanUbi');
@@ -49,6 +49,26 @@ const spanUTri = document.querySelector('#spanUTri');
 const spanNroAl = document.querySelector('#spanNroAl');
 const spanObser = document.querySelector('#spanObser');
 const spanUsuario = document.querySelector('#spanUsuario');
+const btnModificar = document.querySelector('#btnModificar');
+
+const inputModFecha = document.querySelector('#inputModFecha');
+const inputModNroSerie = document.querySelector('#inputModNroSerie');
+const inputModLocalidad = document.querySelector('#inputModLocalidad');
+inputModLocalidad.disabled = true;
+const inputModCalle = document.querySelector('#inputModCalle');
+const inputModAltura = document.querySelector('#inputModAltura');
+const inputModIp = document.querySelector('#inputModIp');
+const inputModUMono = document.querySelector('#inputModUMono');
+const inputModUTri = document.querySelector('#inputModUTri');
+const inputModAl = document.querySelector('#inputModAl');
+const inputModObser = document.querySelector('#inputModObser');
+const inputMods = document.getElementsByClassName('inputMod');
+//const spanMods = document.getElementsByClassName('spanMod');
+const modalActualizarConcentrador = new bootstrap.Modal(document.getElementById('modalActualizarConcentrador'),{backdrop:'static'});
+
+const btnCerrarModal = document.querySelectorAll('.btnCerrarModal');
+
+const formActualizaConcentrador = document.querySelector('#formActualizaConcentrador');
 
 const modal_body_RegCambios = document.querySelector('.modal-body-RegCambios');
 
@@ -63,7 +83,14 @@ let termino = "full"; //la variable termino debe contener siempre un valor debid
 let totalConcentradores = 0;
 let conXPag = 10; //cant Concentradores en tabla por pagina
 let conPagActual = 0; //mro de pagina actual
-
+let dataConcentradorMasInfo = "";
+ 
+//se aplica un addEventListener a los botones cerrar del moodal +Info
+btnCerrarModal.forEach( btnCerrar => {
+    btnCerrar.addEventListener('click', () => {
+        dataConcentradorMasInfo = "";
+    });
+});
 
 btnCerrarSesion.addEventListener('click',()=>{
     let fecha = new Date(Date.now());
@@ -98,6 +125,159 @@ btnQuitFiltro.addEventListener('click', async e => {
         txtInfoBusqueda.style.display = "none";
     }
 });
+
+btnModificar.addEventListener('click', () => {
+
+    actualizaModalInputConcentrador();
+
+
+
+    //spanFecha.style.display = "none";
+    //inputModFecha.style.display = "block";
+
+
+});
+
+//funcion auxiliar que muestra los input y oculta los span, y viceversa, dependiendo del estado booleano que se le pase.
+const actualizaModalInputConcentrador = async () => {
+
+    modal_title[1].innerHTML = `Actualización nro. serie ${dataConcentradorMasInfo.data.numero}`;
+    console.log(inputMods);
+    for(let i = 0; i < inputMods.length; i++){
+        console.log(inputMods[i]);
+            inputMods[i].classList.add('inputModVisible');
+            if(inputMods[i].name !== 'fecha_alta')
+                inputMods[i].value = dataConcentradorMasInfo.data[inputMods[i].name];
+            else{
+                const fecha = new Date(dataConcentradorMasInfo.data[inputMods[i].name]);
+                const fecha_parseadaISO = fecha.toISOString();
+                const fecha_arreglo = fecha_parseadaISO.split('T');
+                inputMods[i].value = fecha_arreglo[0];
+                console.log("fecha parseada: ", fecha_parseadaISO);
+            }
+
+/*
+        if(inputMods[i].id !== "inputModIp"){
+            inputMods[i].value = spanMods[i].innerHTML;
+        }else {
+            let corte = spanMods[i].innerHTML.split(">");
+            corte = corte[1].split('<');
+            inputMods[i].value = corte[0];
+        }
+*/
+        
+
+    }
+}
+
+const actualizaConcentrador = async (_id, fechaAlta, localidad, dirip, calle, altura, nroUsuMono, nroUsuTri, nroAl, observ) => {
+    const resultado = await actualizarConcentrador(URL_API, _id, fechaAlta, localidad, dirip, calle, altura, nroUsuMono, nroUsuTri, nroAl, observ);
+
+    if(resultado.status === 200){
+        return true;
+    }
+    else if(resultado.status === 400){
+        const respuesta = await resultado.json();
+        console.log("hubo un error en la actualizacion: ", respuesta);
+        alertify.alert('Aviso',`Error: ${respuesta.msg}`).set('movable', false);
+        return false;
+    }
+    else{
+        console.log("error desconocido en la actualizacion: ", await resultado);
+        return false;
+    }
+
+        
+}
+
+formActualizaConcentrador.addEventListener('submit', async e => {
+    e.preventDefault();
+    console.log("actualiza concentrador");
+
+    //arreglo que evita sumar la IP en caso que sea la misma, para no causar conflicto con las validaciones del backend.
+    let objDatosActualizar = new Object();
+    let contador_actualizaciones = 0;
+    const fecha_alta_date = new Date(dataConcentradorMasInfo.data.fecha_alta);
+    const fecha_alta_parseada = {
+        ano: fecha_alta_date.getUTCFullYear(),
+        mes: (fecha_alta_date.getUTCMonth()+1)<10 ? `0${fecha_alta_date.getUTCMonth()+1}` : fecha_alta_date.getUTCMonth()+1,
+        dia: (fecha_alta_date.getUTCDate()<10) ? `0${fecha_alta_date.getUTCDate()}` : fecha_alta_date.getUTCDate()
+    };
+    //Acá se deberia armar una cadena parseada en formato de alguna etiqueta para mostrar los valores que son alterados.
+    let varActualizaciones = `<h6>Se actualizarán los siguientes datos:</h6>\n`;
+    if(`${fecha_alta_parseada.ano}-${fecha_alta_parseada.mes}-${fecha_alta_parseada.dia}` !== inputModFecha.value){
+        varActualizaciones += `<span><b>Fecha alta:</b> ${fecha_alta_date.getUTCFullYear()}-${fecha_alta_date.getUTCMonth()+1}-${fecha_alta_date.getUTCDate()} <b>-></b> ${inputModFecha.value}</span><br>`;
+        contador_actualizaciones++;
+        objDatosActualizar.fecha_alta = new Date(inputModFecha.value);
+    }
+    if(dataConcentradorMasInfo.data.localidad !== inputModLocalidad.value){
+        varActualizaciones += `<span><b>Localidad:</b> ${dataConcentradorMasInfo.data.localidad} <b>-></b> ${inputModLocalidad.value}</span><br>`;
+        contador_actualizaciones++;
+        objDatosActualizar.localidad = inputModLocalidad.value;
+    }
+    if(dataConcentradorMasInfo.data.calle !== inputModCalle.value){
+        varActualizaciones += `<span><b>Calle:</b> ${dataConcentradorMasInfo.data.calle} <b>-></b> ${inputModCalle.value}</span><br>`;
+        contador_actualizaciones++;
+        objDatosActualizar.calle = inputModCalle.value;
+    }
+    if(dataConcentradorMasInfo.data.altura !== inputModAltura.value){
+        varActualizaciones += `<span><b>Altura:</b> ${dataConcentradorMasInfo.data.altura} <b>-></b> ${inputModAltura.value}</span><br>`;
+        contador_actualizaciones++;
+        objDatosActualizar.altura = inputModAltura.value;
+    }
+          
+    
+    if(dataConcentradorMasInfo.data.ip !== inputModIp.value){
+        varActualizaciones += `<span><b>IP:</b> ${dataConcentradorMasInfo.data.ip} <b>-></b> ${inputModIp.value}</span><br>`;
+        contador_actualizaciones++;
+        objDatosActualizar.ip = inputModIp.value;
+
+    }
+    if(dataConcentradorMasInfo.data.nro_usuarios_mono !== Number(inputModUMono.value)){
+        varActualizaciones += `<span><b>U. monofásicos:</b> ${dataConcentradorMasInfo.data.nro_usuarios_mono} <b>-></b> ${inputModUMono.value}</span><br>`;
+        contador_actualizaciones++;
+        objDatosActualizar.nro_usuarios_mono = inputModUMono.value;
+    }
+    if(dataConcentradorMasInfo.data.nro_usuarios_tri !== Number(inputModUTri.value)){
+        varActualizaciones += `<span><b>U. trifásicos:</b> ${dataConcentradorMasInfo.data.nro_usuarios_tri} <b>-></b> ${inputModUTri.value}</span><br>`;    
+        contador_actualizaciones++;
+        objDatosActualizar.nro_usuarios_tri = inputModUTri.value;
+    }
+    if(dataConcentradorMasInfo.data.nro_alumbrados !== Number(inputModAl.value)){
+        varActualizaciones += `<span><b>Alumbrados:</b> ${dataConcentradorMasInfo.data.nro_alumbrados} <b>-></b> ${inputModAl.value}</span><br>`;
+        contador_actualizaciones++;
+        objDatosActualizar.nro_alumbrados = inputModAl.value;
+    }
+    if(dataConcentradorMasInfo.data.observaciones !== inputModObser.value){
+        varActualizaciones += `<span><b>Observaciones:</b> ${dataConcentradorMasInfo.data.observaciones} <b>-></b> ${inputModObser.value}</span>`;
+        contador_actualizaciones++;
+        objDatosActualizar.observaciones = inputModObser.value;
+    }
+           
+        if(contador_actualizaciones>0){
+            alertify.confirm(`<span></span>`,
+            async function(){
+                const resultado = await actualizaConcentrador(dataConcentradorMasInfo.data._id,
+                    objDatosActualizar);
+
+                    console.log("resultado! ",);
+                    if(resultado){
+                        modalActualizarConcentrador.hide();
+                        await cargarTabla(tipoBusqueda,termino,0);
+                        alertify.success('concentrador actualizado!');
+                    }
+            },
+            function(){
+              alertify.error('Cancelado');
+            }).set({title:`Actualización Concentrador ${dataConcentradorMasInfo.data.numero}`}).set({labels:{ok:'SI', cancel: 'Cancelar'}}).set('closable', false).set('movable', false)
+            .setContent(varActualizaciones);
+        } else{
+            alertify.alert('Aviso','Debe modificar algún parametro para actualizar la información').set('movable', false);
+        }
+
+})
+
+
 
 const actualizaTotalConcentradores = (valor) => {
     totalConcentradores = valor;
@@ -159,7 +339,7 @@ on(document, 'click', '.btnBorrar', e => {
      },
      function(){
        alertify.error('Cancelado');
-     }).set({title:"Eliminar Concentrador?"}).set({labels:{ok:'SI', cancel: 'Cancelar'}});
+     }).set({title:"Eliminar Concentrador?"}).set({labels:{ok:'SI', cancel: 'Cancelar'}}).set('closable', false).set('movable', false);
 
 });
 
@@ -168,17 +348,17 @@ on(document, 'click', '.btnMasInfo', async e => {
     //const nroConcentrador = e.target.parentNode.parentNode.firstElementChild;
     //console.log(nroConcentrador.getAttribute("_id"));
 
-    const resultado = await consultaConcentrador(URL_API,_id);
+    dataConcentradorMasInfo = await consultaConcentrador(URL_API,_id);
 
-    const datos = resultado.data; 
+    const datos = dataConcentradorMasInfo.data; 
+
+    console.log(datos);
 
     const fecha = new Date(datos.fecha_alta); //Se parsea la fecha a tipo válido
 
 
-    modal_title.innerHTML = `Concentrador nro ${e.target.parentNode.parentNode.children[0].innerHTML}`;
-    if(datos.usuario){ //este condificional borrarlo cuando se normalice el campo "usuario" en TODOS LOS DOCUMENTOS DE LA BD
-        spanUsuario.innerHTML = datos.usuario.usuario;
-    }
+    modal_title[0].innerHTML = `Concentrador nro ${e.target.parentNode.parentNode.children[0].innerHTML}`;
+    spanUsuario.innerHTML = datos.usuario.usuario;
     spanFecha.innerHTML = `${fecha.getUTCDate()}/${fecha.getUTCMonth()+1}/${fecha.getUTCFullYear()}`;
     spanNro.innerHTML = e.target.parentNode.parentNode.children[0].innerHTML;
     spanUbi.innerHTML = e.target.parentNode.parentNode.children[1].innerHTML;
@@ -191,7 +371,6 @@ on(document, 'click', '.btnMasInfo', async e => {
     modalMasInfo.show();
 
 });
-
 
 
 const consultaLogs = async(URL_API) => {

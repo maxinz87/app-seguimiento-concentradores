@@ -3,6 +3,13 @@ const contenedorPrincipalLogs = document.querySelector('#contenedorPrincipalLogs
 const btnIngresar = document.querySelector('#btnIngresar');
 
 
+
+//Usar userAgent para detectar el dispositivo por el que se está accediendo. ya con esto aplicar los estilos mediante javascript con classList o className
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent) ) {
+    document.body.classList.add("fondoMobile");
+ }
+
+
 const agregarLog = async (URL_API, descripcion) => {
     return await fetch(URL_API+'admin/regcambios', {
         method: 'POST',

@@ -34,6 +34,18 @@ const agregarConcentrador = async (URL_API, fechaAlta, nroConcentrador, localida
     });
 }
 
+const actualizarConcentrador = async (URL_API, _id, parametros) => {
+    
+    
+    return await fetch(URL_API+`api/concentradores/${_id}`, {
+        method: 'PUT',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(parametros)
+    });
+}
+
 const eliminarConcentrador = async (URL_API, _id) => {
     let consulta = await fetch(URL_API+`api/concentradores/${_id}`, {
         method: 'DELETE'
@@ -48,4 +60,4 @@ const eliminarConcentrador = async (URL_API, _id) => {
         return false;
 }
 
-export {consultaDB, consultaConcentrador, agregarConcentrador, eliminarConcentrador};
+export {consultaDB, consultaConcentrador, agregarConcentrador, actualizarConcentrador, eliminarConcentrador};

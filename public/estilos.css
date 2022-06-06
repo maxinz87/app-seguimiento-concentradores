@@ -67,7 +67,7 @@ body{
   background: #122B7E;
 }
 
-.modal-footer{
+.modal-footer-mod{
   background: #00a2ff;
 }
 
@@ -122,4 +122,22 @@ body{
 
 .page-item{
   cursor: pointer;
+}
+
+.input-group-text{
+  background: #122B7E;
+  color: white;
+  border: 0px;
+}
+
+.inputMod{
+  margin-left: 10px !important;
+}
+
+.inputModVisible{
+  display: block !important;
+}
+
+.spanModHide{
+  display: none !important;
 }
